@@ -106,7 +106,7 @@ export async function POST(request){
                 payment_method_types: ['card'],
                 line_items: [{
                     price_data:{
-                        currency: 'ksh',
+                        currency: 'kes',
                         product_data:{
                             name: 'Order'
                         },

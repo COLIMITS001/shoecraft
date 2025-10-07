@@ -13,7 +13,7 @@ export default function Dashboard() {
 
     const {getToken} = useAuth()
 
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || 'KSH'
+    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || 'kes'
 
     const router = useRouter()
 
