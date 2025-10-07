@@ -13,7 +13,7 @@ const OrderSummary = ({ totalPrice, items }) => {
     const {user} = useUser()
     const { getToken } = useAuth()
     const dispatch = useDispatch()
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || 'kes';
+    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || 'KES';
 
     const router = useRouter();
 
@@ -89,11 +89,11 @@ const OrderSummary = ({ totalPrice, items }) => {
             <p className='text-slate-400 text-xs my-4'>Payment Method</p>
             <div className='flex gap-2 items-center'>
                 <input type="radio" id="COD" onChange={() => setPaymentMethod('COD')} checked={paymentMethod === 'COD'} className='accent-gray-500' />
-                <label htmlFor="COD" className='cursor-pointer'>Cash On Delivery</label>
+                <label htmlFor="COD" className='cursor-pointer'>Pay On Delivery</label>
             </div>
             <div className='flex gap-2 items-center mt-1'>
                 <input type="radio" id="STRIPE" name='payment' onChange={() => setPaymentMethod('STRIPE')} checked={paymentMethod === 'STRIPE'} className='accent-gray-500' />
-                <label htmlFor="STRIPE" className='cursor-pointer'>Stripe Payment</label>
+                <label htmlFor="STRIPE" className='cursor-pointer'>Pay Now</label>
             </div>
             <div className='my-4 py-4 border-y border-slate-200 text-slate-400'>
                 <p>Address</p>

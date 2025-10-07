@@ -8,7 +8,7 @@ import RatingModal from "./RatingModal";
 
 const OrderItem = ({ order }) => {
 
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || 'kes';
+    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || 'KES';
     const [ratingModal, setRatingModal] = useState(null);
 
     const { ratings } = useSelector(state => state.rating);
