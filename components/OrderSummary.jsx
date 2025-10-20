@@ -70,6 +70,8 @@ const OrderSummary = ({ totalPrice, items }) => {
 
            if(paymentMethod === 'STRIPE'){
             window.location.href = data.session.url;
+           } else if (paymentMethod === 'PAYSTACK'){
+            window.location.href = data.authorization_url;
            }else{
             toast.success(data.message)
             router.push('/orders')
@@ -92,8 +94,8 @@ const OrderSummary = ({ totalPrice, items }) => {
                 <label htmlFor="COD" className='cursor-pointer'>Pay On Delivery</label>
             </div>
             <div className='flex gap-2 items-center mt-1'>
-                <input type="radio" id="STRIPE" name='payment' onChange={() => setPaymentMethod('STRIPE')} checked={paymentMethod === 'STRIPE'} className='accent-gray-500' />
-                <label htmlFor="STRIPE" className='cursor-pointer'>Pay Now</label>
+                <input type="radio" id="PAYSTACK" name='payment' onChange={() => setPaymentMethod('PAYSTACK')} checked={paymentMethod === 'PAYSTACK'} className='accent-gray-500' />
+                <label htmlFor="PAYSTACK" className='cursor-pointer'>Pay Now</label>
             </div>
             <div className='my-4 py-4 border-y border-slate-200 text-slate-400'>
                 <p>Address</p>
@@ -131,7 +133,7 @@ const OrderSummary = ({ totalPrice, items }) => {
                     </div>
                     <div className='flex flex-col gap-1 font-medium text-right'>
                         <p>{currency}{totalPrice.toLocaleString()}</p>
-                        <p><Protect plan={'plus'} fallback={`${currency}5`}>Free</Protect></p>
+                        <p><Protect plan={'plus'} fallback={`${currency}150`}>Free</Protect></p>
                         {coupon && <p>{`-${currency}${(coupon.discount / 100 * totalPrice).toFixed(2)}`}</p>}
                     </div>
                 </div>

@@ -9,6 +9,7 @@ import { NextResponse } from "next/server";
 export async function POST(request){
     try {
         const { userId } = getAuth(request)
+        if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         const isAdmin = await authAdmin(userId)
 
         if (!isAdmin) {
@@ -41,6 +42,7 @@ export async function POST(request){
 export async function DELETE(request){
     try {
         const { userId } = getAuth(request)
+        if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         const isAdmin = await authAdmin(userId)
 
         if (!isAdmin) {

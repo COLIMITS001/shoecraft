@@ -7,7 +7,8 @@ import { NextResponse } from "next/server";
 // Add a new product
 export async function POST(request){
     try {
-        const { userId } = getAuth(request)
+    const { userId } = getAuth(request)
+    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         const storeId = await authSeller(userId)
 
         if(!storeId){
@@ -68,7 +69,8 @@ export async function POST(request){
 // Get all products for a seller
 export async function GET(request){
     try {
-        const { userId } = getAuth(request)
+    const { userId } = getAuth(request)
+    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         const storeId = await authSeller(userId)
 
         if(!storeId){

@@ -3,11 +3,13 @@ import { getAuth } from "@clerk/nextjs/server";
 import { PaymentMethod } from "@prisma/client";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import crypto from "crypto";
 
 
 export async function POST(request){
     try {
         const { userId, has } = getAuth(request)
+        if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         if(!userId){
             return NextResponse.json({ error: "not authorized" }, { status: 401 });
         }
@@ -127,6 +129,37 @@ export async function POST(request){
             return NextResponse.json({session})
          }
 
+         if(paymentMethod === 'PAYSTACK'){
+            const origin = await request.headers.get('origin')
+            const user = await prisma.user.findUnique({ where: { id: userId } })
+
+            const initializeResponse = await fetch('https://api.paystack.co/transaction/initialize', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: user.email,
+                    amount: Math.round(fullAmount * 100),
+                    currency: 'KES',
+                    callback_url: `${origin}/loading?nextUrl=orders`,
+                    metadata: {
+                        orderIds: orderIds.join(','),
+                        userId,
+                        appId: 'shoecraft'
+                    }
+                })
+            })
+
+            const initData = await initializeResponse.json()
+            if(!initializeResponse.ok){
+                return NextResponse.json({ error: initData?.message || 'Unable to initialize Paystack transaction' }, { status: 400 })
+            }
+            // Paystack returns data.authorization_url
+            return NextResponse.json({ authorization_url: initData.data.authorization_url })
+         }
+
           // clear the cart
           await prisma.user.update({
             where: {id: userId},
@@ -144,11 +177,13 @@ export async function POST(request){
 // Get all orders for a user
 export async function GET(request){
     try {
-        const { userId } = getAuth(request)
+    const { userId } = getAuth(request)
+    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         const orders = await prisma.order.findMany({
             where: {userId, OR: [
                 {paymentMethod: PaymentMethod.COD},
-                {AND: [{paymentMethod: PaymentMethod.STRIPE}, {isPaid: true}]}
+                {AND: [{paymentMethod: PaymentMethod.STRIPE}, {isPaid: true}]},
+                {AND: [{paymentMethod: PaymentMethod.PAYSTACK}, {isPaid: true}]}
             ]},
             include: {
                 orderItems: {include: {product: true}},

@@ -8,10 +8,13 @@ import { NextResponse } from "next/server";
 export async function GET(request){
     try {
         const { userId } = getAuth(request)
+        if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
         const storeId = await authSeller(userId)
+        if (!storeId) return NextResponse.json({ error: 'Forbidden: not a seller' }, { status: 403 })
 
         // Get all orders for seller
-        const orders = await prisma.order.findMany({where: {storeId}})
+        const orders = await prisma.order.findMany({ where: { storeId } })
 
          // Get all products with ratings for seller
          const products = await prisma.product.findMany({where: {storeId}})

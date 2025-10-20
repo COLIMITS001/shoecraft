@@ -7,6 +7,7 @@ import { NextResponse } from "next/server";
 export async function POST(request){
     try {
         const {userId, has} = getAuth(request)
+        if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         const { code } = await request.json()
 
         const coupon = await prisma.coupon.findUnique({

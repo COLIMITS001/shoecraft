@@ -7,6 +7,7 @@ import { NextResponse } from "next/server";
 export async function POST(request){
     try {
         const { userId } = getAuth(request)
+        if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         const {orderId, productId, rating, review} = await request.json()
         const order = await prisma.order.findUnique({where: {id: orderId, userId}})
 
